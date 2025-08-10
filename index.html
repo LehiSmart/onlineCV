@@ -1,113 +1,510 @@
-<!DOCTYPE html>
-<html lang= "en">
-
+<!doctype html>
+<html lang="en">
 <head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Lehi Smart — portfolio: software engineering & web development.">
+  <title>Lehi Smart — Software Engineer</title>
 
-    <meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name = "viewport" content = "width-device-width,initial-scale=1.0">
-	<title>Lehi Smart</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+  <!-- Tailwind Play CDN (no build step) -->
+  <script src="https://cdn.tailwindcss.com"></script>
 
-<head>
+  <!-- Custom theme variables & small tweaks -->
+  <style>
+    :root{
+      --bg: #0f1113;         /* dark grey */
+      --panel: #16181b;      /* slightly lighter panel */
+      --muted: #bfc8d6;      /* muted text */
+      --accent: #8b5cf6;     /* purple accent (Tailwind violet-500-ish) */
+      --accent-2: #7c3aed;
+      --glass: rgba(255,255,255,0.02);
+      --focus: 3px solid rgba(139,92,246,0.22);
+    }
 
-<body>
-    
-    <div class="nav-bar">
-        <nav>
-            <ul>
-                <li>
-                    <a href="#"><i class= "fas fa-home"></i></a>
-                </li>
-                <li>
-                    <a href="#"><i class= "fas fa-wrench"></i></a>
-                </li>
-                <li>
-                    <a href="cv.html"><i class= "fas fa-scroll"></i></a>
-                </li>
+    /* make sure tailwind utilities have higher contrast on dark bg */
+    body { background: var(--bg); color: white; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+    .card { background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border: 1px solid rgba(255,255,255,0.04); }
+    .accent { color: var(--accent); }
+    .btn-accent { background: linear-gradient(90deg,var(--accent),var(--accent-2)); color:white; }
+    .outline-focus:focus { outline: none; box-shadow: var(--focus); border-radius: .5rem; }
+
+    /* small shadow for panels */
+    .soft-glow { box-shadow: 0 6px 18px rgba(12,12,12,0.6); }
+
+    /* make keyboard focus visible */
+    :focus { outline: none; box-shadow: var(--focus); }
+
+    /* modal backdrop */
+    .modal-backdrop { background: rgba(0,0,0,0.6); }
+
+    /* improve readability on small screens for long project descriptions */
+    .prose { color: var(--muted); }
+
+    /* prevent focus ring on mouse click but keep for keyboard */
+    :focus:not(:focus-visible) { box-shadow: none; }
+
+    /* small animation */
+    .pop-in { transform: translateY(6px); opacity:0; animation:pop .36s forwards cubic-bezier(.2,.9,.3,1); }
+    @keyframes pop { to { transform: translateY(0); opacity:1; } }
+  </style>
+
+  <!-- Fav icon (simple) -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2240%22 fill=%22%238b5cf6%22/></svg>">
+
+</head>
+<body class="min-h-screen font-sans">
+
+  <!-- Container -->
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <!-- NAV -->
+    <header class="py-6">
+      <nav class="flex items-center justify-between" aria-label="Main navigation">
+        <a href="#" id="brand" class="flex items-center gap-3 text-white">
+          <span class="w-10 h-10 rounded-lg btn-accent flex items-center justify-center text-lg font-bold shadow-md soft-glow">LS</span>
+          <div class="hidden sm:block">
+            <div class="text-xl font-semibold">Lehi Smart</div>
+            <div class="text-xs text-[var(--muted)] -mt-0.5">Software Engineer · Web Developer</div>
+          </div>
+        </a>
+
+        <!-- Desktop Links -->
+        <div class="hidden md:flex items-center gap-6">
+          <a href="#projects" class="text-sm text-[var(--muted)] hover:text-white">Projects</a>
+          <a href="#about" class="text-sm text-[var(--muted)] hover:text-white">About</a>
+          <a href="#blog" class="text-sm text-[var(--muted)] hover:text-white">Blog</a>
+          <a href="#contact" class="text-sm text-[var(--muted)] hover:text-white">Contact</a>
+          <a id="download-cv" class="ml-3 inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium bg-transparent border border-transparent hover:bg-[rgba(255,255,255,0.03)]">
+            Resume
+          </a>
+        </div>
+
+        <!-- Mobile menu button -->
+        <div class="md:hidden">
+          <button id="nav-toggle" aria-expanded="false" aria-controls="mobile-menu" class="p-2 rounded-md outline-focus">
+            <svg id="nav-open" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[var(--muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 8h16M4 16h16"/>
+            </svg>
+            <svg id="nav-close" xmlns="http://www.w3.org/2000/svg" class="hidden h-6 w-6 text-[var(--muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+      </nav>
+
+      <!-- Mobile menu -->
+      <div id="mobile-menu" class="mt-4 md:hidden hidden" role="menu" aria-label="Mobile menu">
+        <div class="flex flex-col gap-3">
+          <a href="#projects" class="py-2 px-3 rounded-md text-[var(--muted)] hover:text-white">Projects</a>
+          <a href="#about" class="py-2 px-3 rounded-md text-[var(--muted)] hover:text-white">About</a>
+          <a href="#blog" class="py-2 px-3 rounded-md text-[var(--muted)] hover:text-white">Blog</a>
+          <a href="#contact" class="py-2 px-3 rounded-md text-[var(--muted)] hover:text-white">Contact</a>
+          <a id="download-cv-mobile" class="py-2 px-3 rounded-md text-[var(--muted)] hover:text-white">Resume</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- HERO -->
+    <main>
+      <section class="grid gap-8 md:grid-cols-2 items-center py-8 sm:py-12">
+        <div class="space-y-6">
+          <div class="text-sm text-[var(--muted)]">Hi — I’m</div>
+          <h1 class="text-4xl sm:text-5xl font-extrabold leading-tight">Lehi Smart</h1>
+          <p class="text-lg prose max-w-xl">Resilient problem-solver and aspiring software engineer who loves sustainable tech and making the web better. I build practical web apps and enjoy neat, maintainable code — with a dash of playfulness.</p>
+
+          <div class="flex flex-wrap gap-3">
+            <a href="#projects" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg btn-accent shadow-md focus:outline-none outline-focus">
+              View projects
+            </a>
+            <a href="#contact" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-[rgba(255,255,255,0.06)] hover:bg-[rgba(255,255,255,0.02)]">
+              Contact me
+            </a>
+            <a id="cta-github" href="#" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.04)]">
+              GitHub
+            </a>
+          </div>
+
+          <div class="text-sm text-[var(--muted)]">Also: conversational Japanese · sustainability enthusiast · former card-game dev (team)</div>
+        </div>
+
+        <div class="card rounded-2xl p-6 soft-glow">
+          <div class="flex items-center gap-4">
+            <div class="w-20 h-20 rounded-xl btn-accent flex items-center justify-center text-2xl font-bold">LS</div>
+            <div>
+              <div class="text-lg font-semibold">Lehi Smart</div>
+              <div class="text-xs text-[var(--muted)]">2nd year Computer Science — Aberystwyth University</div>
+            </div>
+          </div>
+
+          <div class="mt-6 grid grid-cols-2 gap-3 text-sm text-[var(--muted)]">
+            <div>
+              <div class="text-xs uppercase text-[var(--muted)]">Location</div>
+              <div>Aberystwyth, UK</div>
+            </div>
+            <div>
+              <div class="text-xs uppercase text-[var(--muted)]">Looking for</div>
+              <div>Internships & grad roles</div>
+            </div>
+            <div>
+              <div class="text-xs uppercase text-[var(--muted)]">Stack</div>
+              <div>C++, Java, Python, JS, Django</div>
+            </div>
+            <div>
+              <div class="text-xs uppercase text-[var(--muted)]">Contact</div>
+              <div>lehi@example.com</div>
+            </div>
+          </div>
+
+          <div class="mt-6">
+            <div class="text-xs text-[var(--muted)]">Quick links</div>
+            <div class="mt-3 flex gap-3">
+              <a href="https://github.com/LehiSmart" class="py-2 px-3 rounded-md border border-[rgba(255,255,255,0.04)]">GitHub</a>
+              <a href="https://www.linkedin.com/in/lehi-smart-a98665207/" class="py-2 px-3 rounded-md border border-[rgba(255,255,255,0.04)]">LinkedIn</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ABOUT -->
+      <section id="about" class="py-10">
+        <div class="grid md:grid-cols-3 gap-6 items-start">
+          <div class="md:col-span-2 card rounded-2xl p-6">
+            <h2 class="text-2xl font-semibold">About</h2>
+            <p class="mt-3 prose">
+              I’ve experienced difficulty in life but kept pressing on. I care about sustainability and reducing inequality, and I try not to take myself too seriously — but I take code seriously. I’m focused on software engineering and web development, building clean, maintainable systems that solve real problems.
+            </p>
+
+            <div class="mt-6 grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <div class="text-xs text-[var(--muted)]">Languages</div>
+                <div>C++, Java, JavaScript, Python, C#</div>
+              </div>
+              <div>
+                <div class="text-xs text-[var(--muted)]">Frameworks & DB</div>
+                <div>Django, MySQL</div>
+              </div>
+              <div>
+                <div class="text-xs text-[var(--muted)]">Other</div>
+                <div>Web dev, teamwork, conversational Japanese</div>
+              </div>
+              <div>
+                <div class="text-xs text-[var(--muted)]">Certs & Awards</div>
+                <div>Japanese Beginner ×2 · ICT Award</div>
+              </div>
+            </div>
+          </div>
+
+          <aside class="card rounded-2xl p-6">
+            <h3 class="text-lg font-semibold">Interests</h3>
+            <ul class="mt-3 space-y-2 text-sm text-[var(--muted)]">
+              <li>Green tech & sustainability</li>
+              <li>Web performance & small bundles</li>
+              <li>Game mechanics & teamwork</li>
+              <li>Learning languages (日本語！)</li>
             </ul>
-        </nav>
-    </div>    
+          </aside>
+        </div>
+      </section>
 
-    <div class="wrapper">
+      <!-- SKILLS -->
+      <section id="skills" class="py-8">
+        <h2 class="text-2xl font-semibold mb-4">Skills</h2>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+          <!-- Skill chips (update via JS data) -->
+          <div class="px-3 py-2 rounded-lg bg-[rgba(255,255,255,0.02)] text-sm">C++</div>
+          <div class="px-3 py-2 rounded-lg bg-[rgba(255,255,255,0.02)] text-sm">Java</div>
+          <div class="px-3 py-2 rounded-lg bg-[rgba(255,255,255,0.02)] text-sm">Python</div>
+          <div class="px-3 py-2 rounded-lg bg-[rgba(255,255,255,0.02)] text-sm">JavaScript</div>
+          <div class="px-3 py-2 rounded-lg bg-[rgba(255,255,255,0.02)] text-sm">C#</div>
+          <div class="px-3 py-2 rounded-lg bg-[rgba(255,255,255,0.02)] text-sm">Django</div>
+          <div class="px-3 py-2 rounded-lg bg-[rgba(255,255,255,0.02)] text-sm">MySQL</div>
+          <div class="px-3 py-2 rounded-lg bg-[rgba(255,255,255,0.02)] text-sm">HTML/CSS</div>
+        </div>
+      </section>
 
-	    <header>
-            
-            <img src="forest-bg.jpg" class = "background">
-            <img src="fern-fore.png" class = "foreground">
-          
-            <h1 class="logo">Lehi Smart</h1>
+      <!-- PROJECTS -->
+      <section id="projects" class="py-10">
+        <div class="flex items-center justify-between">
+          <h2 class="text-2xl font-semibold">Projects</h2>
+          <div class="text-sm text-[var(--muted)]">Modular — add more in the site data object below</div>
+        </div>
 
-        </header>
+        <div id="projects-grid" class="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <!-- JS fills cards here -->
+        </div>
 
-        <section>
+        <div class="mt-6">
+          <a href="#contact" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg btn-accent">Hire / Contact</a>
+        </div>
+      </section>
 
-            <section id="contents">   
-            
-                <div class="about-me">
-                    <table>
-                        <tr>
-                            <th><img src="me.jpg" class="selfie"></th>
-                            <th>
-                                <p>
-                                    This is me, look at how cool i am. Quack Quack!
-                                </p>
-                            </th>
-                        </tr>
-                    </table>
-                    
-                    <p class="footer">
-                        The information provided on this and other pages by me, your
-                        name (lds8@aber.ac.uk), is my own personal responsibility and
-                        not that of Aberystwyth University. Similarly, any opinions
-                        expressed are my own and are in no way to be taken as those
-                        of A.U.
-                    </p>
+      <!-- BLOG TEASER -->
+      <section id="blog" class="py-10">
+        <h2 class="text-2xl font-semibold">Blog</h2>
+        <p class="text-sm text-[var(--muted)] mt-1">Short posts about projects, sustainability, and the odd personal story.</p>
+
+        <div class="mt-6 grid gap-4 md:grid-cols-2">
+          <article class="card rounded-xl p-5">
+            <h3 class="font-semibold">How small web apps can make a green impact</h3>
+            <p class="mt-2 text-sm text-[var(--muted)]">A short post on efficient web design and reducing energy at scale (coming soon).</p>
+            <div class="mt-3 text-xs text-[var(--muted)]">Dec 2024 · Tech · Sustainability</div>
+          </article>
+
+          <article class="card rounded-xl p-5">
+            <h3 class="font-semibold">Lessons from team-building a card game</h3>
+            <p class="mt-2 text-sm text-[var(--muted)]">On collaboration, layering features, and balancing mechanics.</p>
+            <div class="mt-3 text-xs text-[var(--muted)]">Aug 2024 · Game Dev</div>
+          </article>
+
+          <article class="card rounded-xl p-5">
+            <h3 class="font-semibold">Lessons from team-building a card game</h3>
+            <p class="mt-2 text-sm text-[var(--muted)]">On collaboration, layering features, and balancing mechanics.</p>
+            <div class="mt-3 text-xs text-[var(--muted)]">Aug 2024 · Game Dev</div>
+          </article>
+
+          <article class="card rounded-xl p-5">
+            <h3 class="font-semibold">Lessons from team-building a card game</h3>
+            <p class="mt-2 text-sm text-[var(--muted)]">On collaboration, layering features, and balancing mechanics.</p>
+            <div class="mt-3 text-xs text-[var(--muted)]">Aug 2024 · Game Dev</div>
+          </article>
+        </div>
+      </section>
+
+      <!-- CONTACT -->
+      <section id="contact" class="py-12">
+        <div class="grid md:grid-cols-2 gap-6 items-start">
+          <div class="card p-6 rounded-2xl">
+            <h2 class="text-2xl font-semibold">Contact</h2>
+            <p class="mt-2 text-sm text-[var(--muted)]">I’m open to internships, junior roles, and interesting freelance work. You can reach me here:</p>
+
+            <div class="mt-6 space-y-3 text-sm">
+              <div><strong>Email</strong> — <a id="contact-email" href="mailto:lehi@example.com" class="text-[var(--accent)]">lehi@example.com</a></div>
+              <div><strong>LinkedIn</strong> — <a id="contact-linkedin" href="#" class="text-[var(--accent)]" target="_blank" rel="noopener">Connect</a></div>
+              <div><strong>GitHub</strong> — <a id="contact-github" href="#" class="text-[var(--accent)]" target="_blank" rel="noopener">View repos</a></div>
+            </div>
+
+            <div class="mt-6">
+              <div class="text-xs text-[var(--muted)]">Quick message</div>
+              <!-- Simple contact form using mailto fallback (no backend) -->
+              <form id="contact-form" class="mt-3 grid gap-3" onsubmit="return submitForm(event)">
+                <input id="name" name="name" required placeholder="Your name" class="px-3 py-2 rounded-md bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.03)] outline-focus" />
+                <input id="email" name="email" type="email" required placeholder="you@example.com" class="px-3 py-2 rounded-md bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.03)] outline-focus" />
+                <textarea id="message" name="message" rows="4" required placeholder="Short message..." class="px-3 py-2 rounded-md bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.03)] outline-focus"></textarea>
+                <div class="flex gap-3">
+                  <button class="btn-accent px-4 py-2 rounded-md" type="submit">Send</button>
+                  <button type="button" onclick="prefillEmail()" class="px-4 py-2 rounded-md border border-[rgba(255,255,255,0.04)]">Open email</button>
                 </div>
+                <div id="contact-hint" class="text-xs text-[var(--muted)]">This form will open an email if your browser doesn't support server forms.</div>
+              </form>
+            </div>
+          </div>
 
-                <hr>
-                
-                <div class="showcase" id = "project1">
-                    <div class="overlay"></div>
-                    <div class="showcase-content">
-                        <div class="close-btn" onclick="togglePopup()">&times;</div>
-                        <h1>Title</h1>
-                        <p>Insert sample text</p>
-                    </div>
-                </div>
+          <div class="card p-6 rounded-2xl">
+            <h3 class="text-lg font-semibold">Availability</h3>
+            <p class="mt-2 text-sm text-[var(--muted)]">Open to internships and entry-level positions during term breaks and after graduation.</p>
 
-                <div class="projects">
-                
-                    <!--<img src="ferns2.jpg" class="ferns2">-->
-    
-                    <div class="cards">
-    
-                        <div class= "card" onclick="togglePopup()">
-                            <div class="card-img arduino"></div>
-                            <h2>Morse Code Decoder</h2>
-                            <p>text</p>
-                        </div>
-                        <div class= "card">
-                            <div class="card-img arduino"></div>
-                            <h2>Playing With Lights</h2>
-                            <p>text</p>
-                        </div>
-                        <div class= "card">
-                            <div class="card-img arduino"></div>
-                            <h2>Other Stuff</h2>
-                            <p>text</p>
-                        </div>
-    
-                    </div>
+            <h4 class="mt-6 text-sm font-semibold">Employment history</h4>
+            <ul class="mt-2 text-sm text-[var(--muted)] space-y-2">
+              <li>Various roles (extensive work history demonstrating reliability & adaptability).</li>
+              <li>Team dev: card game — developer (responsibilities: gameplay logic, UI, team testing).</li>
+              <li>Certifications: Japanese Beginner ×2; ICT Award.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </main>
 
-                    
-    
-                </div>  
-            
-            </section>
+    <!-- FOOTER -->
+    <footer class="py-8 text-sm text-[var(--muted)]">
+      <div class="flex items-center justify-between">
+        <div>© <span id="current-year"></span> The information provided on this and other pages by me, Lehi Smart (lds8@aber.ac.uk), is my own personal responsibility and not that of Aberystwyth University. 
+            Similarly, any opinions expressed are my own and are in no way to be taken as those of A.U. </div>
+        <div class="flex gap-3">
+          <a id="footer-github" href="#" class="hover:underline">GitHub</a>
+          <a id="footer-linkedin" href="#" class="hover:underline">LinkedIn</a>
+        </div>
+      </div>
+    </footer>
 
-        </section>
+  </div>
+
+  <!-- Project modal -->
+  <div id="modal" class="fixed inset-0 hidden items-center justify-center z-50">
+    <div class="modal-backdrop absolute inset-0"></div>
+    <div class="relative z-10 max-w-3xl w-full p-6">
+      <div class="card rounded-2xl p-6">
+        <button aria-label="Close project" onclick="closeModal()" class="absolute right-6 top-6 text-[var(--muted)]">✕</button>
+        <div id="modal-content"></div>
+      </div>
     </div>
+  </div>
 
-<body>
+  <!-- ===== JS: siteData + rendering logic ===== -->
+  <script>
+    // ---------- CONFIG / SITE DATA ----------
+    // Update this object to change content on the site.
+    const siteData = {
+      name: "Lehi Smart",
+      email: "lehi@example.com",
+      github: "https://github.com/YOUR_USERNAME",
+      linkedin: "https://www.linkedin.com/in/YOUR_PROFILE",
+      resume: "resume.pdf", // replace with real link or set to '#' if not available
+      projects: [
+        {
+          id: "cardgame",
+          title: "Team Card Game (Multiplayer prototype)",
+          short: "A balanced card game built with a small team — I contributed core gameplay logic, UI hooks, and playtesting fixes.",
+          description: "Worked as part of a 4-person team to design and implement a card game prototype. I implemented the gameplay engine, turn system, and UI integration with the game state. Responsibilities included test-driven development for core mechanics and building tools for balancing cards.",
+          stack: ["JavaScript", "Node.js", "HTML5 Canvas", "Socket.IO"],
+          image: "", // optional screenshot URL
+          repo: "https://github.com/YOUR_USERNAME/cardgame",
+          demo: "" // optional live demo
+        },
+        // Add more projects here; the site will render them automatically.
+      ],
+      skills: ["C++","Java","Python","JavaScript","C#","Django","MySQL","HTML/CSS"],
+      contactFormMailto: "lehi@example.com"
+    };
+
+    // ---------- Utilities ----------
+    function el(tag, attrs = {}, children = []) {
+      const e = document.createElement(tag);
+      Object.entries(attrs).forEach(([k,v]) => {
+        if (k === 'class') e.className = v;
+        else if (k.startsWith('data-')) e.setAttribute(k, v);
+        else if (k === 'html') e.innerHTML = v;
+        else e[k] = v;
+      });
+      (Array.isArray(children) ? children : [children]).forEach(c => { if (c) e.appendChild(typeof c === 'string' ? document.createTextNode(c) : c); });
+      return e;
+    }
+
+    // ---------- Render Projects ----------
+    function renderProjects() {
+      const grid = document.getElementById('projects-grid');
+      grid.innerHTML = '';
+      siteData.projects.forEach((p, i) => {
+        const card = el('article', { class: 'card rounded-xl p-5 pop-in', tabindex: 0 });
+        const title = el('h3', { class: 'font-semibold text-lg' }, [document.createTextNode(p.title)]);
+        const short = el('p', { class: 'mt-2 text-sm text-[var(--muted)]' }, [document.createTextNode(p.short)]);
+        const stack = el('div', { class: 'mt-4 text-xs text-[var(--muted)]' }, [document.createTextNode('Stack: ' + (p.stack || []).join(', '))]);
+
+        const actions = el('div', { class: 'mt-4 flex gap-3' });
+        const view = el('button', { class: 'px-3 py-2 rounded-md border border-[rgba(255,255,255,0.06)]', onclick: () => openModal(p) }, [document.createTextNode('Details')]);
+        actions.appendChild(view);
+
+        if (p.repo) {
+          const repo = el('a', { class: 'px-3 py-2 rounded-md border border-[rgba(255,255,255,0.06)]', href: p.repo, target: '_blank', rel: 'noopener' }, [document.createTextNode('Repository')]);
+          actions.appendChild(repo);
+        }
+        if (p.demo) {
+          const demo = el('a', { class: 'px-3 py-2 rounded-md btn-accent', href: p.demo, target: '_blank', rel: 'noopener' }, [document.createTextNode('Live demo')]);
+          actions.appendChild(demo);
+        }
+
+        card.appendChild(title);
+        card.appendChild(short);
+        card.appendChild(stack);
+        card.appendChild(actions);
+
+        grid.appendChild(card);
+      });
+    }
+
+    // ---------- Modal ----------
+    function openModal(project) {
+      const modal = document.getElementById('modal');
+      const container = document.getElementById('modal-content');
+      container.innerHTML = `
+        <h2 class="text-2xl font-semibold">${project.title}</h2>
+        <p class="mt-3 text-sm text-[var(--muted)]">${project.description}</p>
+        <div class="mt-4 text-xs text-[var(--muted)]"><strong>Stack:</strong> ${(project.stack||[]).join(', ')}</div>
+        <div class="mt-4 flex gap-3">
+          ${project.repo ? `<a class="px-3 py-2 rounded-md border border-[rgba(255,255,255,0.06)]" href="${project.repo}" target="_blank" rel="noopener">Repository</a>` : ''}
+          ${project.demo ? `<a class="px-3 py-2 rounded-md btn-accent" href="${project.demo}" target="_blank" rel="noopener">Live demo</a>` : ''}
+        </div>
+      `;
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      // trap focus (simple)
+      modal.querySelector('button')?.focus();
+    }
+    function closeModal() {
+      const modal = document.getElementById('modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+    // close on backdrop click
+    document.getElementById('modal').addEventListener('click', (e) => {
+      if (e.target.classList.contains('modal-backdrop')) closeModal();
+    });
+
+    // ---------- Contact form (mailto fallback) ----------
+    function submitForm(e) {
+      e.preventDefault();
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const message = document.getElementById('message').value.trim();
+      const subject = encodeURIComponent(`Portfolio contact from ${name}`);
+      const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`);
+      const mailto = `mailto:${siteData.contactFormMailto}?subject=${subject}&body=${body}`;
+      window.location.href = mailto;
+      return false;
+    }
+    function prefillEmail() {
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const message = document.getElementById('message').value.trim();
+      const subject = encodeURIComponent(`Portfolio contact from ${name || 'Website Visitor'}`);
+      const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`);
+      window.location.href = `mailto:${siteData.contactFormMailto}?subject=${subject}&body=${body}`;
+    }
+
+    // ---------- Nav toggle ----------
+    const navToggle = document.getElementById('nav-toggle');
+    navToggle.addEventListener('click', () => {
+      const menu = document.getElementById('mobile-menu');
+      const open = menu.classList.toggle('hidden');
+      document.getElementById('nav-open').classList.toggle('hidden');
+      document.getElementById('nav-close').classList.toggle('hidden');
+      navToggle.setAttribute('aria-expanded', (!open).toString());
+    });
+
+    // ---------- Populate header / links dynamically ----------
+    function applySiteData() {
+      document.getElementById('contact-email').href = `mailto:${siteData.email}`;
+      document.getElementById('contact-email').textContent = siteData.email;
+      document.getElementById('cta-github').href = siteData.github;
+      document.getElementById('download-cv').href = siteData.resume || '#';
+      document.getElementById('download-cv-mobile').href = siteData.resume || '#';
+      document.getElementById('footer-github').href = siteData.github;
+      document.getElementById('footer-linkedin').href = siteData.linkedin;
+      document.getElementById('contact-github').href = siteData.github;
+      document.getElementById('contact-linkedin').href = siteData.linkedin;
+      document.getElementById('current-year').textContent = (new Date()).getFullYear();
+      // render projects
+      renderProjects();
+    }
+
+    // ---------- Init ----------
+    applySiteData();
+
+    // close modal on ESC
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    // small UX: smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', (e) => {
+        const href = a.getAttribute('href');
+        if (href.length > 1) {
+          e.preventDefault();
+          document.querySelector(href).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+
+  </script>
+</body>
+</html>
