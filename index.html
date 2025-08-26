@@ -6,130 +6,258 @@
   <meta name="description" content="Lehi Smart — portfolio: software engineering & web development.">
   <title>Lehi Smart — Software Engineer</title>
 
+  <!-- Tailwind Play CDN (no build step) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Custom theme variables & small tweaks -->
+  <style>
+
+    /* Animated flora background */
+    #bg-canvas {
+      background: #0d0d0d;
+      position: fixed;
+      inset: 0;
+      z-index: -2;              /* sits behind the site */
+      pointer-events: none;    /* never block clicks */
+      opacity: 1;            /* subtle; tune 0.35–0.7 */
+    }
+
+    /* Make main content sit above the canvas */
+    .page-container,
+    .site-header,
+    .site-footer,
+    .modal { position: relative; z-index: 1; }
+
+    /* Respect reduced-motion */
+    @media (prefers-reduced-motion: reduce) {
+      #bg-canvas { display: none; }
+    }
+
+    :root{
+      --bg: #0f1113;         /* dark grey */
+      --panel: #16181b;      /* slightly lighter panel */
+      --muted: #bfc8d6;      /* muted text */
+      --accent: #8b5cf6;     /* purple accent (Tailwind violet-500-ish) */
+      --accent-2: #7c3aed;
+      --glass: rgba(255,255,255,0.02);
+      --focus: 3px solid rgba(139,92,246,0.22);
+    }
+
+    /* make sure tailwind utilities have higher contrast on dark bg */
+    body { background: var(--bg); color: white; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+    .card { background: linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255,255,255,0.01)); border: 1px solid rgba(255,255,255,0.04); }
+    .accent { color: var(--accent); }
+    .btn-accent { background: linear-gradient(90deg,var(--accent),var(--accent-2)); color:white; }
+    .outline-focus:focus { outline: none; box-shadow: var(--focus); border-radius: .5rem; }
+
+    /* small shadow for panels */
+    .soft-glow { box-shadow: 0 6px 18px rgba(12,12,12,0.6); }
+
+    /* make keyboard focus visible */
+    :focus { outline: none; box-shadow: var(--focus); }
+
+    /* modal backdrop */
+    .modal-backdrop { background: rgba(0, 0, 0, 0.795); }
+
+    /* improve readability on small screens for long project descriptions */
+    .prose { color: var(--muted); }
+
+    /* prevent focus ring on mouse click but keep for keyboard */
+    :focus:not(:focus-visible) { box-shadow: none; }
+
+    /* small animation */
+    .pop-in { transform: translateY(6px); opacity:0; animation:pop .36s forwards cubic-bezier(.2,.9,.3,1); }
+    @keyframes pop { to { transform: translateY(0); opacity:1; } }
+
+    #closebutton {
+      margin: 0.8%;
+    }
+
+    .interactive-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2rem;
+      margin-top: 1.5rem;
+    }
+
+    .garden-card, .carbon-card {
+      text-align: center;
+    }
+
+    #gardenCanvas {
+      margin: auto;
+      background: #1e1e1e;
+      border: 2px solid #8b5cf6;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+
+    #carbonChart {
+      margin: auto;
+      background: #1e1e1e;
+      border: 2px solid #8b5cf6;
+      border-radius: 8px;
+      margin-top: 1rem;
+    }
+
+    
+
+
+  </style>
+
+  <!-- Fav icon (simple) -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2240%22 fill=%22%238b5cf6%22/></svg>">
 
-  <!-- site stylesheet -->
-  <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="min-h-screen font-sans">
 
-  <div class="page-container">
+  <!-- Animated background (behind everything) -->
+  <canvas id="bg-canvas" aria-hidden="true"></canvas>
+
+
+  <!-- Container -->
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
     <!-- NAV -->
-    <header class="site-header">
-      <nav class="nav" aria-label="Main navigation">
-        <a href="#" class="brand">
-          <span class="brand-badge">LS</span>
-          <div class="brand-text">
-            <div class="name">Lehi Smart</div>
-            <div class="subtitle">Software Engineer · Web Developer</div>
+    <header class="py-6">
+      <nav class="flex items-center justify-between" aria-label="Main navigation">
+        <a href="#" id="brand" class="flex items-center gap-3 text-white">
+          <span class="w-10 h-10 rounded-lg btn-accent flex items-center justify-center text-lg font-bold shadow-md soft-glow">LS</span>
+          <div class="hidden sm:block">
+            <div class="text-xl font-semibold">Lehi Smart</div>
+            <div class="text-xs text-[var(--muted)] -mt-0.5">Software Engineer · Web Developer</div>
           </div>
         </a>
 
-        <div class="nav-links desktop-only" id="nav-links">
-          <a href="#projects">Projects</a>
-          <a href="#about">About</a>
-          <a href="#blog">Blog</a>
-          <a href="#contact">Contact</a>
-          <a id="resume-link" href="#">Resume</a>
+        <!-- Desktop Links -->
+        <div class="hidden md:flex items-center gap-6">
+          <a href="#projects" class="text-sm text-[var(--muted)] hover:text-white">Projects</a>
+          <a href="#about" class="text-sm text-[var(--muted)] hover:text-white">About</a>
+          <a href="#blog" class="text-sm text-[var(--muted)] hover:text-white">Blog</a>
+          <a href="#contact" class="text-sm text-[var(--muted)] hover:text-white">Contact</a>
+          <a id="download-cv" class="ml-3 inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium bg-transparent border border-transparent hover:bg-[rgba(255,255,255,0.03)]">
+            Resume
+          </a>
         </div>
 
-        <button id="hamburger" class="hamburger mobile-only" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu">
-          <span class="hamburger-bar"></span>
-          <span class="hamburger-bar"></span>
-          <span class="hamburger-bar"></span>
-        </button>
+        <!-- Mobile menu button -->
+        <div class="md:hidden">
+          <button id="nav-toggle" aria-expanded="false" aria-controls="mobile-menu" class="p-2 rounded-md outline-focus">
+            <svg id="nav-open" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[var(--muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 8h16M4 16h16"/>
+            </svg>
+            <svg id="nav-close" xmlns="http://www.w3.org/2000/svg" class="hidden h-6 w-6 text-[var(--muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
       </nav>
 
-      <!-- mobile menu -->
-      <div id="mobile-menu" class="mobile-menu hidden" role="menu" aria-label="Mobile menu">
-        <a href="#projects">Projects</a>
-        <a href="#about">About</a>
-        <a href="#blog">Blog</a>
-        <a href="#contact">Contact</a>
-        <a id="resume-link-mobile" href="#">Resume</a>
+      <!-- Mobile menu -->
+      <div id="mobile-menu" class="mt-4 md:hidden hidden" role="menu" aria-label="Mobile menu">
+        <div class="flex flex-col gap-3">
+          <a href="#projects" class="py-2 px-3 rounded-md text-[var(--muted)] hover:text-white">Projects</a>
+          <a href="#about" class="py-2 px-3 rounded-md text-[var(--muted)] hover:text-white">About</a>
+          <a href="#blog" class="py-2 px-3 rounded-md text-[var(--muted)] hover:text-white">Blog</a>
+          <a href="#contact" class="py-2 px-3 rounded-md text-[var(--muted)] hover:text-white">Contact</a>
+          <a id="download-cv-mobile" class="py-2 px-3 rounded-md text-[var(--muted)] hover:text-white">Resume</a>
+        </div>
       </div>
     </header>
 
     <!-- HERO -->
     <main>
-      <section class="hero">
-        <div class="hero-left">
-          <div class="greeting">Hi — I’m</div>
-          <h1 class="hero-title">Lehi Smart</h1>
-          <p class="hero-sub">Resilient problem-solver and aspiring software engineer who loves sustainable tech and making the web better. I build practical web apps and enjoy neat, maintainable code — with a dash of playfulness.</p>
+      <section class="grid gap-8 md:grid-cols-2 items-center py-8 sm:py-12">
+        <div class="space-y-6">
+          <div class="text-sm text-[var(--muted)]">Hi — I’m</div>
+          <h1 class="text-4xl sm:text-5xl font-extrabold leading-tight">Lehi Smart</h1>
+          <p class="text-lg prose max-w-xl">Resilient problem-solver and aspiring software engineer who loves sustainable tech and making the web better. I build practical web apps, small pieces of software and enjoy neat, maintainable code — with a dash of playfulness.</p>
 
-          <div class="hero-ctas">
-            <a class="btn primary" href="#projects">View projects</a>
-            <a class="btn ghost" href="#contact">Contact me</a>
-            <a id="github-cta" class="btn ghost" href="#" target="_blank" rel="noopener">GitHub</a>
+          <div class="flex flex-wrap gap-3">
+            <a href="#projects" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg btn-accent shadow-md focus:outline-none outline-focus">
+              View projects
+            </a>
+            <a href="#contact" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-[rgba(255,255,255,0.06)] hover:bg-[rgba(255,255,255,0.02)]">
+              Contact me
+            </a>
+            <a id="cta-github" href="#" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.04)]">
+              GitHub
+            </a>
           </div>
 
-          <div class="meta small">Also: conversational Japanese · sustainability enthusiast · former card-game dev (team)</div>
+          <div class="text-sm text-[var(--muted)]">Also: Conversational Japanese · Sustainability Enthusiast · Developer · Gardener</div>
         </div>
 
-        <aside class="hero-right card">
-          <div class="profile-top">
-            <!--<div class="profile-badge">LS</div>-->
-            <img src="assets/me.jpg" alt="Lehi Smart" class="profile-image">
+        <div class="card rounded-2xl p-6 soft-glow">
+          <div class="flex items-center gap-4">
+            <div class="w-20 h-20 rounded-xl btn-accent flex items-center justify-center text-2xl font-bold">LS</div>
             <div>
-              <div class="profile-name">Lehi Smart</div>
-              <div class="profile-sub">2nd year Computer Science — Aberystwyth University</div>
+              <div class="text-lg font-semibold">Lehi Smart</div>
+              <div class="text-xs text-[var(--muted)]">2nd year Computer Science — Aberystwyth University</div>
             </div>
           </div>
 
-          <dl class="profile-grid">
+          <div class="mt-6 grid grid-cols-2 gap-3 text-sm text-[var(--muted)]">
             <div>
-              <dt>Location</dt>
-              <dd>Aberystwyth, UK</dd>
+              <div class="text-xs uppercase text-[var(--muted)]">Location</div>
+              <div>Aberystwyth, UK</div>
             </div>
             <div>
-              <dt>Looking for</dt>
-              <dd>Internships & grad roles</dd>
+              <div class="text-xs uppercase text-[var(--muted)]">Looking for</div>
+              <div>Internships & grad roles</div>
             </div>
             <div>
-              <dt>Stack</dt>
-              <dd>C++, Java, Python, JS, Django</dd>
+              <div class="text-xs uppercase text-[var(--muted)]">Stack</div>
+              <div>C++, Java, Python, JS, Django, C#, C</div>
             </div>
             <div>
-              <dt>Contact</dt>
-              <dd id="email-text">lehi@example.com</dd>
+              <div class="text-xs uppercase text-[var(--muted)]">Contact</div>
+              <div>lehi.smart1311@gmail.com</div>
             </div>
-          </dl>
-
-          <div class="quick-links">
-            <a id="gh" href="https://github.com/LehiSmart" target="_blank" rel="noopener">GitHub</a>
-            <a id="li" href="https://www.linkedin.com/in/lehi-smart-a98665207/" target="_blank" rel="noopener">LinkedIn</a>
           </div>
-        </aside>
+
+          <div class="mt-6">
+            <div class="text-xs text-[var(--muted)]">Quick links</div>
+            <div class="mt-3 flex gap-3">
+              <a href="https://github.com/LehiSmart" class="py-2 px-3 rounded-md border border-[rgba(255,255,255,0.04)]">GitHub</a>
+              <a href="https://www.linkedin.com/in/lehi-smart-a98665207/" class="py-2 px-3 rounded-md border border-[rgba(255,255,255,0.04)]">LinkedIn</a>
+            </div>
+          </div>
+        </div>
       </section>
 
       <!-- ABOUT -->
-      <section id="about" class="section about">
-        <div class="container grid-2">
-          <div class="card about-card">
-            <h2>About</h2>
-            <p class="prose">I’ve experienced difficulty in life but kept pressing on. I care about sustainability and reducing inequality, and I try not to take myself too seriously — but I take code seriously. I’m focused on software engineering and web development, building clean, maintainable systems that solve real problems.</p>
+      <section id="about" class="py-10">
+        <div class="grid md:grid-cols-3 gap-6 items-start">
+          <div class="md:col-span-2 card rounded-2xl p-6">
+            <h2 class="text-2xl font-semibold">About</h2>
+            <p class="mt-3 prose">
+              I’ve experienced difficulty in life but kept pressing on. I care about sustainability and reducing inequality, and I try not to take myself too seriously — but I take code seriously. I’m focused on software engineering and web development, building clean, maintainable systems that solve real problems.
+            </p>
 
-            <div class="about-grid">
+            <div class="mt-6 grid grid-cols-2 gap-4 text-sm">
               <div>
-                <strong>Languages</strong><div class="muted">C++, Java, JavaScript, Python, C#</div>
+                <div class="text-xs text-[var(--muted)]">Languages</div>
+                <div>C++, Java, JavaScript, Python, C#, C, HTML, CSS</div>
               </div>
               <div>
-                <strong>Frameworks & DB</strong><div class="muted">Django, MySQL</div>
+                <div class="text-xs text-[var(--muted)]">Frameworks & DB</div>
+                <div>Django, MySQL</div>
               </div>
               <div>
-                <strong>Other</strong><div class="muted">Web dev, teamwork, conversational Japanese</div>
+                <div class="text-xs text-[var(--muted)]">Other</div>
+                <div>Web dev, teamwork, conversational Japanese</div>
               </div>
               <div>
-                <strong>Certs</strong><div class="muted">Japanese Beginner ×2 · ICT Award</div>
+                <div class="text-xs text-[var(--muted)]">Certs & Awards</div>
+                <div>Japanese Language Certifications ×2 · ICT Award</div>
               </div>
             </div>
           </div>
 
-          <aside class="card interests">
-            <h3>Interests</h3>
-            <ul>
+          <aside class="card rounded-2xl p-6">
+            <h3 class="text-lg font-semibold">Interests</h3>
+            <ul class="mt-3 space-y-2 text-sm text-[var(--muted)]">
               <li>Green tech & sustainability</li>
               <li>Web performance & small bundles</li>
               <li>Game mechanics & teamwork</li>
@@ -140,93 +268,119 @@
       </section>
 
       <!-- SKILLS -->
-      <section id="skills" class="section">
-        <h2>Skills</h2>
-        <div class="skills-grid">
-          <!-- small list of skill chips; keep in HTML for SEO -->
-          <span class="chip">C++</span>
-          <span class="chip">Java</span>
-          <span class="chip">Python</span>
-          <span class="chip">JavaScript</span>
-          <span class="chip">C#</span>
-          <span class="chip">Django</span>
-          <span class="chip">MySQL</span>
-          <span class="chip">HTML/CSS</span>
+      <section id="skills" class="py-8">
+        <h2 class="text-2xl font-semibold mb-4">Skills</h2>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+          <!-- Skill chips (update via JS data) -->
+          <div class="px-3 py-2 rounded-lg bg-[rgba(255,255,255,0.02)] text-sm">C++</div>
+          <div class="px-3 py-2 rounded-lg bg-[rgba(255,255,255,0.02)] text-sm">Java</div>
+          <div class="px-3 py-2 rounded-lg bg-[rgba(255,255,255,0.02)] text-sm">Python</div>
+          <div class="px-3 py-2 rounded-lg bg-[rgba(255,255,255,0.02)] text-sm">JavaScript</div>
+          <div class="px-3 py-2 rounded-lg bg-[rgba(255,255,255,0.02)] text-sm">C#</div>
+          <div class="px-3 py-2 rounded-lg bg-[rgba(255,255,255,0.02)] text-sm">Django</div>
+          <div class="px-3 py-2 rounded-lg bg-[rgba(255,255,255,0.02)] text-sm">MySQL</div>
+          <div class="px-3 py-2 rounded-lg bg-[rgba(255,255,255,0.02)] text-sm">HTML/CSS</div>
         </div>
       </section>
 
       <!-- PROJECTS -->
-      <section id="projects" class="section">
-        <div class="projects-header">
-          <h2>Projects</h2>
-          <div class="muted">Modular — add more in <code>script.js</code></div>
+      <section id="projects" class="py-10">
+        <!-- INTERACTIVE FUN --
+        <section id="interactive" class="section">
+          <h2 class="text-2xl font-semibold">Fun & Interactive</h2>
+          <p class="muted">Two small widgets that tie into my passions for sustainability and growth.</p>
+
+          <div class="interactive-grid">
+             Code Garden --
+            <div class="card garden-card">
+              <h3>Code Garden 🌱</h3>
+              <canvas id="gardenCanvas" width="300" height="300"></canvas>
+              <button class="btn primary" id="waterButton">Water the plant</button>
+              <p class="muted small">Watch it grow as you click! Progress saved for your next visit.</p>
+            </div>
+
+             Carbon Footprint --
+            <div class="card carbon-card">
+              <h3>Carbon Footprint Tracker 🌍</h3>
+              <div id="carbonOutput" class="muted">Loading footprint data...</div>
+              <canvas id="carbonChart" width="300" height="200"></canvas>
+              <p class="muted small">Showing how my lightweight site compares to a typical bloated site.</p>
+            </div>
+          </div>
+        </section>-->
+
+        <div class="flex items-center justify-between">
+          <h2 class="text-2xl font-semibold">Projects</h2>
+          <!--<div class="text-sm text-[var(--muted)]">Modular — add more in the site data object below</div>-->
         </div>
 
-        <div id="projects-grid" class="projects-grid">
-          <!-- JS will populate cards here -->
+        <div id="projects-grid" class="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <!-- JS fills cards here -->
         </div>
 
-        <div style="margin-top:1rem">
-          <a class="btn primary" href="#contact">Hire / Contact</a>
+        <div class="mt-6">
+          <a href="#contact" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg btn-accent">Hire / Contact</a>
         </div>
       </section>
 
-      <!-- BLOG -->
-      <section id="blog" class="section">
-        <h2>Blog</h2>
-        <p class="muted">Short posts about projects, sustainability, and the odd personal story.</p>
+      <!-- BLOG TEASER -->
+      <section id="blog" class="py-10">
+        <h2 class="text-2xl font-semibold">Blog</h2>
+        <p class="text-sm text-[var(--muted)] mt-1">Short posts about projects, sustainability, and the odd personal story.</p>
 
-        <div class="blog-grid">
-          <article class="card">
-            <h3>How small web apps can make a green impact</h3>
-            <p class="muted small">Dec 2024 · Tech · Sustainability</p>
-            <p class="prose small">A short post on efficient web design and reducing energy at scale (coming soon).</p>
+        <div class="mt-6 grid gap-4 md:grid-cols-2">
+          <article class="card rounded-xl p-5">
+            <h3 class="font-semibold">How small web apps can make a green impact</h3>
+            <p class="mt-2 text-sm text-[var(--muted)]">A short post on efficient web design and reducing energy at scale (coming soon).</p>
+            <div class="mt-3 text-xs text-[var(--muted)]">Dec 2024 · Tech · Sustainability</div>
           </article>
 
-          <article class="card">
-            <h3>Lessons from team-building a card game</h3>
-            <p class="muted small">Aug 2024 · Game Dev</p>
-            <p class="prose small">On collaboration, layering features, and balancing mechanics.</p>
+          <article class="card rounded-xl p-5">
+            <h3 class="font-semibold">Lessons from team-building a card game</h3>
+            <p class="mt-2 text-sm text-[var(--muted)]">On collaboration, layering features, and balancing mechanics.</p>
+            <div class="mt-3 text-xs text-[var(--muted)]">Aug 2024 · Game Dev</div>
           </article>
         </div>
       </section>
 
       <!-- CONTACT -->
-      <section id="contact" class="section contact-section">
-        <div class="container grid-2">
-          <div class="card contact-card">
-            <h2>Contact</h2>
-            <p class="muted small">I’m open to internships, junior roles, and interesting freelance work. You can reach me here:</p>
+      <section id="contact" class="py-12">
+        <div class="grid md:grid-cols-2 gap-6 items-start">
+          <div class="card p-6 rounded-2xl">
+            <h2 class="text-2xl font-semibold">Contact</h2>
+            <p class="mt-2 text-sm text-[var(--muted)]">I’m open to internships, junior roles, and interesting freelance work. You can reach me here:</p>
 
-            <div class="contact-details">
-              <div><strong>Email</strong> — <a id="contact-email" href="mailto:lehi@example.com">lehi@example.com</a></div>
-              <div><strong>LinkedIn</strong> — <a id="contact-linkedin" href="#" target="_blank" rel="noopener">Connect</a></div>
-              <div><strong>GitHub</strong> — <a id="contact-github" href="#" target="_blank" rel="noopener">View repos</a></div>
+            <div class="mt-6 space-y-3 text-sm">
+              <div><strong>Email</strong> — <a id="contact-email" href="mailto:lehi.smart1311@gmail.com" class="text-[var(--accent)]">lehi.smart1311@gmail.com</a></div>
+              <div><strong>LinkedIn</strong> — <a id="contact-linkedin" href="https://www.linkedin.com/in/lehi-smart-a98665207/" class="text-[var(--accent)]" target="_blank" rel="noopener">Connect</a></div>
+              <div><strong>GitHub</strong> — <a id="contact-github" href="https://github.com/LehiSmart" class="text-[var(--accent)]" target="_blank" rel="noopener">View repos</a></div>
             </div>
 
-            <div class="contact-form">
-              <form id="contact-form" onsubmit="return submitForm(event)">
-                <input id="name" name="name" placeholder="Your name" required>
-                <input id="email" name="email" placeholder="you@example.com" type="email" required>
-                <textarea id="message" name="message" rows="4" placeholder="Short message..." required></textarea>
-                <div class="form-row">
-                  <button class="btn primary" type="submit">Send</button>
-                  <button class="btn ghost" type="button" onclick="prefillEmail()">Open email</button>
+            <div class="mt-6">
+              <div class="text-xs text-[var(--muted)]">Quick message</div>
+              <!-- Simple contact form using mailto fallback (no backend) -->
+              <form id="contact-form" class="mt-3 grid gap-3" onsubmit="return submitForm(event)">
+                <input id="name" name="name" required placeholder="Your name" class="px-3 py-2 rounded-md bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.03)] outline-focus" />
+                <input id="email" name="email" type="email" required placeholder="you@example.com" class="px-3 py-2 rounded-md bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.03)] outline-focus" />
+                <textarea id="message" name="message" rows="4" required placeholder="Short message..." class="px-3 py-2 rounded-md bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.03)] outline-focus"></textarea>
+                <div class="flex gap-3">
+                  <button class="btn-accent px-4 py-2 rounded-md" type="submit">Send</button>
+                  <button type="button" onclick="prefillEmail()" class="px-4 py-2 rounded-md border border-[rgba(255,255,255,0.04)]">Open email</button>
                 </div>
-                <p class="muted tiny">This form uses a mailto fallback — replace with a backend/service for a real inbox.</p>
+                <div id="contact-hint" class="text-xs text-[var(--muted)]">This form will open an email if your browser doesn't support server forms.</div>
               </form>
             </div>
           </div>
 
-          <div class="card">
-            <h3>Availability</h3>
-            <p class="muted small">Open to internships and entry-level positions during term breaks and after graduation.</p>
+          <div class="card p-6 rounded-2xl">
+            <h3 class="text-lg font-semibold">Availability</h3>
+            <p class="mt-2 text-sm text-[var(--muted)]">Open to internships and entry-level positions during term breaks and after graduation.</p>
 
-            <h4>Employment history</h4>
-            <ul class="muted">
-              <li>Various roles demonstrating reliability & adaptability</li>
-              <li>Team dev: card game — developer (gameplay logic, UI, testing)</li>
-              <li>Certifications: Japanese Beginner ×2; ICT Award</li>
+            <h4 class="mt-6 text-sm font-semibold">Employment history</h4>
+            <ul class="mt-2 text-sm text-[var(--muted)] space-y-2">
+              <li>Various roles (extensive work history demonstrating reliability & adaptability).</li>
+              <li>Team dev: card game — developer (responsibilities: gameplay logic, UI, team testing).</li>
+              <li>Certifications: Japanese Beginner ×2; ICT Award.</li>
             </ul>
           </div>
         </div>
@@ -234,25 +388,399 @@
     </main>
 
     <!-- FOOTER -->
-    <footer class="site-footer">
-      <div>© <span id="year"></span> Created by Lehi Smart</div>
-      <div class="footer-links">
-        <a id="footer-github" href="#" target="_blank" rel="noopener">GitHub</a>
-        <a id="footer-linkedin" href="#" target="_blank" rel="noopener">LinkedIn</a>
+    <footer class="py-8 text-sm text-[var(--muted)]">
+      <div class="flex items-center justify-between">
+        <div>© <span id="current-year"></span> Lehi Smart — Built with care</div>
+        <div class="flex gap-3">
+          <a id="footer-github" href="#" class="hover:underline">GitHub</a>
+          <a id="footer-linkedin" href="#" class="hover:underline">LinkedIn</a>
+        </div>
       </div>
     </footer>
+
   </div>
 
-  <!-- PROJECT MODAL -->
-  <div id="modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-    <div class="modal-backdrop" id="modal-backdrop"></div>
-    <div class="modal-panel card">
-      <button class="modal-close" aria-label="Close project" id="modal-close">✕</button>
-      <div id="modal-content"></div>
+  <!-- Project modal -->
+  <div id="modal" class="fixed inset-0 hidden items-center justify-center z-50">
+    <div class="modal-backdrop absolute inset-0"></div>
+    <div class="relative z-10 max-w-3xl w-full p-6">
+      <div class="card rounded-2xl p-6">
+        <button id="closebutton" aria-label="Close project" onclick="closeModal()" class="absolute right-6 top-6 text-[var(--muted)]">✕</button>
+        <div id="modal-content"></div>
+      </div>
     </div>
   </div>
 
-  <!-- site script -->
-  <script src="script.js"></script>
+  <!-- ===== JS: siteData + rendering logic ===== -->
+  <script>
+    // ---------- CONFIG / SITE DATA ----------
+    // Update this object to change content on the site.
+    const siteData = {
+      name: "Lehi Smart",
+      email: "lehi.smart1311@gmail.com",
+      github: "https://github.com/LehiSmart",
+      linkedin: "https://www.linkedin.com/in/lehi-smart-a98665207",
+      resume: "resume.pdf", // replace with real link or set to '#' if not available
+      projects: [
+        {
+          id: "cardgame",
+          title: "Team Card Game (Multiplayer prototype)",
+          short: "A balanced card game built with a small team — I contributed core gameplay logic, UI hooks, and playtesting fixes.",
+          description: "Worked as part of a 4-person team to design and implement a card game prototype. I implemented the gameplay engine, turn system, and UI integration with the game state. Responsibilities included test-driven development for core mechanics and building tools for balancing cards.",
+          stack: ["JavaScript", "Node.js", "HTML5 Canvas", "Socket.IO"],
+          image: "", // optional screenshot URL
+          repo: "https://github.com/YOUR_USERNAME/cardgame",
+          demo: "" // optional live demo
+        },
+        // Add more projects here; the site will render them automatically.
+      ],
+      skills: ["C++","Java","Python","JavaScript","C#","Django","MySQL","HTML/CSS"],
+      contactFormMailto: "lehi.smart1311@gmail.com"
+    };
+
+    /* ===================== FLORA BACKDROP ===================== */
+/* Subtle, regenerative branching vines on a dark palette     */
+/* Canvas-based; respects prefers-reduced-motion              */
+
+(function initFloraBackground(){
+    const prefersReduced = window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced) return;
+
+    const canvas = document.getElementById('bg-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d', { alpha: true });
+
+    // Colors (tuned to your theme)
+    const BG_FILL = 'rgba(15,17,19,0.25)';     // gentle fade film
+    const STEM = 'rgba(180, 200, 210, 0.12)';   // silvery stem
+    const LEAF = 'rgba(0,128,0,0.8)';    // faint violet hint
+
+    // Layout / behavior
+    let W = 0, H = 0, DPR = Math.min(window.devicePixelRatio || 1, 2);
+    const BRANCHES = [];       // active tips
+    const MAX_BRANCHES = 90;  // global cap
+    const STEP = 1.35;         // pixels per frame per segment
+    const SPREAD = 0.18;       // angle jitter
+    const SPLIT_CHANCE = 0.005;// chance to create a side branch per step
+    const DIE_CHANCE = 0.0008; // chance to end a branch per step
+    const FADE_ALPHA = 0.05;  // trail persistence (lower = longer trails)
+    const RESEED_INTERVAL = 3500; // ms
+    let lastTime = 0;
+
+    function resize(){
+      W = canvas.width  = Math.floor(innerWidth * DPR);
+      H = canvas.height = Math.floor(innerHeight * DPR);
+      canvas.style.width = innerWidth + 'px';
+      canvas.style.height = innerHeight + 'px';
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    }
+    window.addEventListener('resize', resize, { passive: true });
+    resize();
+
+    // A branch tip
+    function spawn(x, y, angle, depth = 0){
+      BRANCHES.push({
+        x, y, angle,
+        depth,
+        life: 0,
+        maxLife: 400 + Math.random()*260,
+        width: Math.max(1.5 - depth*0.2, 0.4)
+      });
+    }
+
+    // Seed several roots from the bottom and sides
+    function reseed(){
+      // bottom seeds
+      for (let i=0;i<8;i++){
+        const x = (innerWidth * (i+0.5))/8 + (Math.random()-0.5)*30;
+        spawn(x, innerHeight + 10, -Math.PI/2 + (Math.random()-0.5)*0.4);
+      }
+      // side seeds
+      for (let i=0;i<4;i++){
+        const y = (innerHeight * (i+0.5))/4 + (Math.random()-0.5)*40;
+        spawn(-10, y, 0 + (Math.random()-0.5)*0.3);
+        spawn(innerWidth+10, y, Math.PI + (Math.random()-0.5)*0.3);
+      }
+    }
+    reseed();
+    let reseedTimer = setInterval(() => {
+      if (BRANCHES.length < MAX_BRANCHES * 0.6) reseed();
+    }, RESEED_INTERVAL);
+
+    function stepBranch(b){
+      // turn slightly
+      b.angle += (Math.random()-0.5) * SPREAD;
+
+      // next point
+      const nx = b.x + Math.cos(b.angle) * STEP;
+      const ny = b.y + Math.sin(b.angle) * STEP;
+
+      // draw stem
+      ctx.lineWidth = b.width;
+      ctx.strokeStyle = STEM;
+      ctx.beginPath();
+      ctx.moveTo(b.x, b.y);
+      ctx.lineTo(nx, ny);
+      ctx.stroke();
+
+      // sometimes a small leaf
+      if (Math.random() < 0.03){
+        ctx.fillStyle = LEAF;
+        const r = 1.2 + Math.random()*2.2;
+        ctx.beginPath();
+        ctx.ellipse(nx, ny, r, r*0.6, b.angle, 0, Math.PI*2);
+        ctx.fill();
+      }
+
+      b.x = nx; b.y = ny;
+      b.life++;
+
+      // chance to split
+      if (Math.random() < SPLIT_CHANCE && BRANCHES.length < MAX_BRANCHES){
+        spawn(b.x, b.y, b.angle + (Math.random()<0.5?-1:1)* (0.5 + Math.random()*0.7), b.depth+1);
+      }
+
+      // end conditions
+      const offscreen = nx < -20 || nx > innerWidth+20 || ny < -40 || ny > innerHeight+20;
+      const tooOld = b.life > b.maxLife;
+      const dies = Math.random() < DIE_CHANCE;
+      return !(offscreen || tooOld || dies);
+    }
+
+    function fadeFrame(){
+      // translucent film creates trails (no hard clear)
+      ctx.fillStyle = BG_FILL;
+      ctx.fillRect(0, 0, innerWidth, innerHeight);
+    }
+
+    function animate(ts){
+      const dt = ts - lastTime; lastTime = ts;
+
+      // low-FPS guard & trail fade
+      if (dt > 32 || Math.random() < FADE_ALPHA) fadeFrame();
+
+      // advance each branch; filter dead ones
+      let next = 0;
+      for (let i=0;i<BRANCHES.length;i++){
+        const b = BRANCHES[i];
+        if (stepBranch(b)) BRANCHES[next++] = b;
+      }
+      BRANCHES.length = next;
+
+      // keep population healthy
+      if (BRANCHES.length < MAX_BRANCHES*0.4) reseed();
+
+      requestAnimationFrame(animate);
+    }
+
+    // Initial soft tint to avoid a blank first frame
+    fadeFrame();
+    requestAnimationFrame(animate);
+
+    // Cleanup if needed (not strictly necessary for this site)
+    window.addEventListener('pagehide', () => { clearInterval(reseedTimer); });
+  })();
+
+
+    // ---------- Utilities ----------
+    function el(tag, attrs = {}, children = []) {
+      const e = document.createElement(tag);
+      Object.entries(attrs).forEach(([k,v]) => {
+        if (k === 'class') e.className = v;
+        else if (k.startsWith('data-')) e.setAttribute(k, v);
+        else if (k === 'html') e.innerHTML = v;
+        else e[k] = v;
+      });
+      (Array.isArray(children) ? children : [children]).forEach(c => { if (c) e.appendChild(typeof c === 'string' ? document.createTextNode(c) : c); });
+      return e;
+    }
+
+    // ---------- Render Projects ----------
+    function renderProjects() {
+      const grid = document.getElementById('projects-grid');
+      grid.innerHTML = '';
+      siteData.projects.forEach((p, i) => {
+        const card = el('article', { class: 'card rounded-xl p-5 pop-in', tabindex: 0 });
+        const title = el('h3', { class: 'font-semibold text-lg' }, [document.createTextNode(p.title)]);
+        const short = el('p', { class: 'mt-2 text-sm text-[var(--muted)]' }, [document.createTextNode(p.short)]);
+        const stack = el('div', { class: 'mt-4 text-xs text-[var(--muted)]' }, [document.createTextNode('Stack: ' + (p.stack || []).join(', '))]);
+
+        const actions = el('div', { class: 'mt-4 flex gap-3' });
+        const view = el('button', { class: 'px-3 py-2 rounded-md border border-[rgba(255,255,255,0.06)]', onclick: () => openModal(p) }, [document.createTextNode('Details')]);
+        actions.appendChild(view);
+
+        if (p.repo) {
+          const repo = el('a', { class: 'px-3 py-2 rounded-md border border-[rgba(255,255,255,0.06)]', href: p.repo, target: '_blank', rel: 'noopener' }, [document.createTextNode('Repository')]);
+          actions.appendChild(repo);
+        }
+        if (p.demo) {
+          const demo = el('a', { class: 'px-3 py-2 rounded-md btn-accent', href: p.demo, target: '_blank', rel: 'noopener' }, [document.createTextNode('Live demo')]);
+          actions.appendChild(demo);
+        }
+
+        card.appendChild(title);
+        card.appendChild(short);
+        card.appendChild(stack);
+        card.appendChild(actions);
+
+        grid.appendChild(card);
+      });
+    }
+    renderProjects();
+
+    // --- Code Garden ---
+    const canvas = document.getElementById('gardenCanvas');
+    const ctx = canvas?.getContext('2d');
+    let plantHeight = parseInt(localStorage.getItem('plantHeight')) || 50;
+
+    function drawPlant() {
+      if (!ctx) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#8b5cf6';
+      ctx.fillRect(canvas.width / 2 - 10, canvas.height - plantHeight, 20, plantHeight);
+      ctx.beginPath();
+      ctx.arc(canvas.width / 2, canvas.height - plantHeight, 15, 0, Math.PI * 2);
+      ctx.fillStyle = '#4ade80';
+      ctx.fill();
+    }
+
+    document.getElementById('waterButton')?.addEventListener('click', () => {
+      plantHeight = Math.min(plantHeight + 10, 250);
+      localStorage.setItem('plantHeight', plantHeight);
+      drawPlant();
+    });
+
+    drawPlant();
+
+    // --- Carbon Footprint Tracker ---
+    const carbonData = {
+      mySite: 50,   // KB size
+      avgSite: 2000 // KB size for typical site
+    };
+
+    function loadCarbonTracker() {
+      const output = document.getElementById('carbonOutput');
+      const ctxChart = document.getElementById('carbonChart')?.getContext('2d');
+
+      if (output) {
+        const saved = ((carbonData.mySite / carbonData.avgSite) * 100).toFixed(1);
+        output.textContent = `My site is about ${saved}% the size of a typical site — greener & faster!`;
+      }
+
+      if (ctxChart) {
+        new Chart(ctxChart, {
+          type: 'bar',
+          data: {
+            labels: ['My Site', 'Typical Site'],
+            datasets: [{
+              label: 'Page Size (KB)',
+              data: [carbonData.mySite, carbonData.avgSite],
+              backgroundColor: ['#8b5cf6', '#4b5563']
+            }]
+          },
+          options: { responsive: true, plugins: { legend: { display: false } } }
+        });
+      }
+    }
+
+    loadCarbonTracker();
+
+
+    // ---------- Modal ----------
+    function openModal(project) {
+      const modal = document.getElementById('modal');
+      const container = document.getElementById('modal-content');
+      container.innerHTML = `
+        <h2 class="text-2xl font-semibold">${project.title}</h2>
+        <p class="mt-3 text-sm text-[var(--muted)]">${project.description}</p>
+        <div class="mt-4 text-xs text-[var(--muted)]"><strong>Stack:</strong> ${(project.stack||[]).join(', ')}</div>
+        <div class="mt-4 flex gap-3">
+          ${project.repo ? `<a class="px-3 py-2 rounded-md border border-[rgba(255,255,255,0.06)]" href="${project.repo}" target="_blank" rel="noopener">Repository</a>` : ''}
+          ${project.demo ? `<a class="px-3 py-2 rounded-md btn-accent" href="${project.demo}" target="_blank" rel="noopener">Live demo</a>` : ''}
+        </div>
+      `;
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      // trap focus (simple)
+      modal.querySelector('button')?.focus();
+    }
+    function closeModal() {
+      const modal = document.getElementById('modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+    // close on backdrop click
+    document.getElementById('modal').addEventListener('click', (e) => {
+      if (e.target.classList.contains('modal-backdrop')) closeModal();
+    });
+
+    // ---------- Contact form (mailto fallback) ----------
+    function submitForm(e) {
+      e.preventDefault();
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const message = document.getElementById('message').value.trim();
+      const subject = encodeURIComponent(`Portfolio contact from ${name}`);
+      const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`);
+      const mailto = `mailto:${siteData.contactFormMailto}?subject=${subject}&body=${body}`;
+      window.location.href = mailto;
+      return false;
+    }
+    function prefillEmail() {
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const message = document.getElementById('message').value.trim();
+      const subject = encodeURIComponent(`Portfolio contact from ${name || 'Website Visitor'}`);
+      const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`);
+      window.location.href = `mailto:${siteData.contactFormMailto}?subject=${subject}&body=${body}`;
+    }
+
+    // ---------- Nav toggle ----------
+    const navToggle = document.getElementById('nav-toggle');
+    navToggle.addEventListener('click', () => {
+      const menu = document.getElementById('mobile-menu');
+      const open = menu.classList.toggle('hidden');
+      document.getElementById('nav-open').classList.toggle('hidden');
+      document.getElementById('nav-close').classList.toggle('hidden');
+      navToggle.setAttribute('aria-expanded', (!open).toString());
+    });
+
+    // ---------- Populate header / links dynamically ----------
+    function applySiteData() {
+      document.getElementById('contact-email').href = `mailto:${siteData.email}`;
+      document.getElementById('contact-email').textContent = siteData.email;
+      document.getElementById('cta-github').href = siteData.github;
+      document.getElementById('download-cv').href = siteData.resume || '#';
+      document.getElementById('download-cv-mobile').href = siteData.resume || '#';
+      document.getElementById('footer-github').href = siteData.github;
+      document.getElementById('footer-linkedin').href = siteData.linkedin;
+      document.getElementById('contact-github').href = siteData.github;
+      document.getElementById('contact-linkedin').href = siteData.linkedin;
+      document.getElementById('current-year').textContent = (new Date()).getFullYear();
+      // render projects
+      renderProjects();
+    }
+
+    // ---------- Init ----------
+    applySiteData();
+
+    // close modal on ESC
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    // small UX: smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', (e) => {
+        const href = a.getAttribute('href');
+        if (href.length > 1) {
+          e.preventDefault();
+          document.querySelector(href).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+
+  </script>
 </body>
 </html>
