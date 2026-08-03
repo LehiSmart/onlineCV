@@ -3,51 +3,100 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title></title>
-        <meta name="description" content="">
+        <title>Lehi Smart | Computer Science Student</title>
+        <meta name="description" content="Computer Science student at Aberystwyth University sharing my interests in software engineering, web development, and building practical projects.">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="main.css">
 
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-
     </head>
-    <body class = "bg-zinc-700">
-        <header class = "bg-zinc-800 text-white">
-            <div class = "container flex justify-between items-center py-4">
-                <div class = "text-2xl">Lehi <strong>Smart</strong></div>
+    <body class="bg-zinc-700 text-white">
+        <header class="bg-zinc-800 text-white sticky top-0 z-10">
+            <div class="container flex justify-between items-center py-4">
+                <a href="#home" class="text-2xl font-bold">Lehi <strong class="text-emerald-600">Smart</strong></a>
 
-                <ul class = "flex items-center gap-4">
-                    <li class = "mr-6 text-1.25rem font-bold"><a href = "#" class = "text-emerald-600 hover:text-emerald-800">Home</a></li>
-                    <li class = "mr-6 text-1.25rem font-bold"><a href = "#" class = "text-emerald-600 hover:text-emerald-800">About</a></li>
-                    <li class = "mr-6 text-1.25rem font-bold"><a href = "#" class = "text-emerald-600 hover:text-emerald-800">Projects</a></li>
+                <ul class="flex items-center gap-4">
+                    <li><a href="#about" class="nav-link">About</a></li>
+                    <li><a href="#projects" class="nav-link">Projects</a></li>
+                    <li><a href="#contact" class="nav-link">Contact</a></li>
                 </ul>
             </div>
         </header>
-        <main class = "container py-8">
-            <section class = "flex items-center justify-center gap-4">
-                <h1 class = "text-zinc-900 text-right font-semibold w-1/2 text-2xl mb-4">Resilient problem-solver and aspiring software engineer. 
-                                                    
-                </h1>
 
-                <div class=" w-1/2 rounded overflow-hidden shadow-lg bg-emerald-950/50 ">
-                    <img class="w-full" src="images\aberystwythScene.jpg" alt="Sunset in the mountains">
-                    <div class="px-6 py-4 ">
-                        <div class="font-bold text-xl mb-2">Lehi Smart</div>
-                        <p class="text-mauve-400 text-base">
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia, nulla! Maiores et perferendis eaque, exercitationem praesentium nihil.
-                        </p>
-                    </div>
-                    <div class="px-6 pt-4 pb-2">
-                        <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#photography</span>
-                        <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#travel</span>
-                        <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#winter</span>
+        <main id="home" class="container py-8">
+            <section class="hero-grid">
+                <img
+                    class="w-[clamp(260px,70vw,350px)] h-auto object-contain rounded-md shadow-lg shrink-0"
+                    src="images/me.jpg"
+                    alt="Profile picture of Lehi Smart"
+                />
+
+                <div class="hero-copy">
+                    <p class="eyebrow">Computer Science student • Aberystwyth University</p>
+                    <h1>Hi, I'm Lehi.</h1>
+                    <p>
+                        I’m currently a BSc Computer Science student approaching my third year, and I’m building toward a career in software engineering.
+                        I’m especially interested in creating practical software, learning by building, and turning ideas into useful tools.
+                    </p>
+                    <div class="hero-actions">
+                        <a href="#projects" class="btn btn-primary">View projects</a>
+                        <a href="#contact" class="btn btn-secondary">Let's connect</a>
                     </div>
                 </div>
-            </section>    
-            
-            <p class = "py-4 text-lg text-gray-300">This is a simple website built with Tailwind CSS.</p>
-        <script src="" async defer></script>
+            </section>
+
+            <section id="about" class="section-card">
+                <h2>About me</h2>
+                <p>
+                    Final-year CS student with a green thumb at Aberystwyth University building personal projects and websites. 
+                    Interested in applied software roles at the intersection of tech, the environment and making a positive impact — and hoping to work in Japan one day.
+                    I have a big love for learning and travel, aiming to achieve a lifestyle close to the digital nomad ideal. 
+                    I’m currently exploring the world of web development and software engineering, and I’m always looking for new challenges to grow my skills.
+                </p>
+                <div class="pill-list">
+                    <span class="pill">Software engineering</span>
+                    <span class="pill">Web development</span>
+                    <span class="pill">Horticulture & Gardening</span>
+                    <span class="pill">Digital Nomadism</span>
+                </div>
+            </section>
+
+            <section id="projects" class="section-card">
+                <h2>Projects and focus areas</h2>
+                <div class="card-grid">
+                    <article class="project-card">
+                        <img src="images/portfolioSnippet.png" alt="Screenshot of my personal portfolio website" class="project-image" />
+                        <h3>Personal portfolio</h3>
+                        <p>Building a polished online presence that reflects both my technical work and my personality.</p>
+                    </article>
+                    <article class="project-card">
+                        <img src="images/cardgameSnippet.PNG" alt="Card game showcase image" class="project-image" />
+                        <h3>Academic growth</h3>
+                        <p>A card game developed with Java and built with Maven. Fully functional with great features</p>
+                    </article>
+                    <article class="project-card">
+                        <img src="images/hobbies.jpg" alt="Image representing hobbies and interests" class="project-image" />
+                        <h3>Keeping up with hobbies</h3>
+                        <p>Exploring creative outlets and interests outside of my academic and professional pursuits.</p>
+                    </article>
+                </div>
+            </section>
+
+            <section id="contact" class="section-card">
+                <h2>Let's connect</h2>
+                <p>
+                    I’m always interested in conversations about software engineering, internships, university projects, and new ideas to build.
+                </p>
+                <p class="contact-note">
+                    If you’d like to chat, feel free to reach out through the channels you use most.
+                </p>
+            </section>
+        </main>
+
+        <footer class="container py-6 text-center text-sm text-gray-300">
+            © 2026 Lehi Smart
+        </footer>
     </body>
 </html>
