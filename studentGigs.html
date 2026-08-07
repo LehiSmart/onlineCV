@@ -1,0 +1,54 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Lehi Smart | Computer Science Student</title>
+        <meta name="description" content="Computer Science student at Aberystwyth University sharing my interests in software engineering, web development, and building practical projects.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="main.css">
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        
+  </head>
+  <body class="bg-zinc-700 text-white">
+    <header class="bg-zinc-800 text-white sticky top-0 z-10">
+        <div class="container flex justify-between items-center py-4">
+            <a href="index.html" class="text-2xl font-bold">Lehi <strong class="text-emerald-600">Smart</strong></a>
+
+            <ul class="flex items-center gap-4">
+                <li><a href="index.html" class="nav-link">Back to Home</a></li>
+            </ul>
+        </div>
+    </header>
+    <a href="index.html" class="eyebrow"></a>
+    <main id="home" class="container py-8">
+      <section class="section-card">
+        <div>
+          <div class="slideshow-container">
+            <div class="mySlides fade">
+              <div class="numbertext">1 / 1</div>
+              <img src="images/studentGigsLanding.PNG" alt="Student Gigs landing page" class="project-image" />
+              <div class="text">Student Gigs</div>
+            </div>
+
+            <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+            <a class="next" onclick="plusSlides(1)">&#10095;</a>
+          </div>
+          <br>
+          <div style="text-align:center">
+            <span class="dot" onclick="currentSlide(1)"></span>
+          </div>
+          <h1><strong>Student Gigs Project</strong></h1>
+          <p>Developing a platform for students to find freelance opportunities.</p>
+        </div>
+      </section>
+    </main>
+    <footer class="container py-6 text-center text-sm text-gray-300">
+            © 2026 Lehi Smart
+    </footer>
+  </body>
+  <script src="slides.js"></script>
+</html>
